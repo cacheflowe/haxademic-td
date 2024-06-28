@@ -3,3 +3,4 @@ _assets
 .DS_Store
 *.log
 Backup/
+tmp/
