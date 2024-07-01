@@ -5,3 +5,4 @@ _assets
 Backup/
 tmp/
 haxademic.*.toe
+node_modules
