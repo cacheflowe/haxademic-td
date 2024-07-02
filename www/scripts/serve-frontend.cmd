@@ -1,4 +1,4 @@
 pushd ..
-start "" npm run dev
+start /min "" npm run dev
 popd
-pause
+exit
