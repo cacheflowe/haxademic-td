@@ -12,6 +12,18 @@ import "./haxademic.js/components/event-log-view.js";
 class CustomApp extends HTMLElement {
   connectedCallback() {
     this.init();
+    _store.addListener(this);
+  }
+
+  storeUpdated(key, value) {
+    console.log(key, value);
+    if (key == "presets") {
+      let presetsJSON = JSON.parse(value);
+      console.log(presetsJSON);
+    } else if (key == "activePreset") {
+      let activePresetJSON = JSON.parse(value);
+      console.log(activePresetJSON);
+    }
   }
 
   init() {
