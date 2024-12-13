@@ -45,3 +45,19 @@ float height = 1./uTDOutputInfo.res.w;
 vec2 aspect = width * uTDOutputInfo.res.wz; // swizzle height/width
 vec2 p = vUV.xy / aspect;
 ```
+
+
+## Python snippets
+
+[run()](https://derivative.ca/UserGuide/Run_Command_Examples)
+
+```python
+# Call a class function with a delay
+run(lambda: self.BroadcastVals(), delayFrames=30)
+# Call a global function with a delay
+run("broadcastVals()", delayFrames=30)
+# Call a function with an argument
+run("TurnOff(args[0])", oldConnection, delayFrames=1)
+# Call a script DAT with an argument and a delay
+op('text_script_example').run('arg1=something', delayFrames=1)
+```

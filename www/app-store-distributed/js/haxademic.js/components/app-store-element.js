@@ -16,8 +16,14 @@ class AppStoreElement extends HTMLElement {
   initComponent() {
     this.storeKey = String(this.getAttribute("key")) || "key";
     this.storeValue = String(this.getAttribute("value")) || "value";
+
+    // handle special values to coerce datatypes
     if (this.storeValue == "true") this.storeValue = true;
-    if (this.storeValue == "false") this.storeValue = false;
+    else if (this.storeValue == "false") this.storeValue = false;
+    else if (this.storeValue == "0") this.storeValue = 0;
+    else if (this.storeValue == "1") this.storeValue = 1;
+
+    // AppStore connection
     this.valueFromStore = null;
     ObjectUtil.callbackWhenPropertyExists(window, "_store", () => {
       this.initStoreListener();

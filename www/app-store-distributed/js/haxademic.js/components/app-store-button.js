@@ -10,19 +10,28 @@ class AppStoreButton extends AppStoreElement {
     this.button = this.el.querySelector("button");
     this.isToggle = this.getAttribute("toggle") != null;
     this.isMomentary = this.getAttribute("momentary") != null;
+    if (this.isMomentary) this.storeValue = 1; // if the storeValue is "momentary", always use 1/0 to send a pulse
     this.button.addEventListener(this.clickEvent(), (e) => {
       if (!this.storeKey) return;
-      let currentValue = _store.get(this.storeKey);
-      // if the storeValue is "toggle", toggle the boolean value
-      if (this.isToggle) this.storeValue = !currentValue;
-      // if the storeValue is "toggle", toggle the boolean value
-      if (this.isMomentary) this.storeValue = true;
-      // // if the storeValue is "true" or "false", send the boolean instead of the string
-      currentValue = this.storeValue;
+
+      // if value isn't in store yet, use initial attribute value
+      // this is more for the toggle button, b/c it changes its value
+      let curVal = _store.get(this.storeKey) || this.storeValue;
+
+      if (this.isToggle) {
+        // if the storeValue is "toggle", toggle the boolean value, which is stored when it comes back from the socket connection
+        if (curVal == 0 && typeof curVal == "number") curVal = 1;
+        else if (curVal == 1 && typeof curVal == "number") curVal = 0;
+        else if (curVal == false && typeof curVal == "boolean") curVal = true;
+        else if (curVal == true && typeof curVal == "boolean") curVal = false;
+      } else {
+        // normal buttons always send the initial attribute value
+        curVal = this.storeValue;
+      }
       // broadcast current value
-      _store.set(this.storeKey, currentValue, true);
-      // if the storeValue is "momentary", send true and immediately false
-      if (this.isMomentary) _store.set(this.storeKey, false, true);
+      _store.set(this.storeKey, curVal, true);
+      // if the storeValue is "momentary", send 1 and immediately 0
+      if (this.isMomentary) _store.set(this.storeKey, 0, true);
     });
 
     if (this.isToggle) {
@@ -35,13 +44,13 @@ class AppStoreButton extends AppStoreElement {
 
   setStoreValue(value) {
     if (this.isToggle) {
-      // toggle button
-      console.log(value);
+      // store the value for future reference
+      this.storeValue = value;
+      // set checkbox indicator
       let checkbox = this.button.querySelector("input");
-      checkbox.checked = value;
-      console.log("checkbox.checked", checkbox.checked, value);
+      checkbox.checked = value == true || parseInt(value) == 1; // allow for 1/0 or true/false
     } else {
-      // notmal button w/possible shared key
+      // normal button behavior (w/possible shared key)
       if (value == this.storeValue) this.button.setAttribute("disabled", true);
       else this.button.removeAttribute("disabled");
     }
