@@ -6,7 +6,8 @@ class EventLogView extends HTMLElement {
     this.el = this.shadow ? this.shadow : this;
     this.render();
     _store.addListener(this);
-    this.eventLog = new EventLog(this.el, 10); // use <div> instead of this.shadow so we can keep <style> intact
+    let maxLength = parseInt(this.getAttribute("max-length")) || 10;
+    this.eventLog = new EventLog(this.el, maxLength); // use <div> instead of this.shadow so we can keep <style> intact
   }
 
   storeUpdated(key, value) {

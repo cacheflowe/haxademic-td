@@ -1,16 +1,10 @@
 import AppStoreElement from "./app-store-element.js";
 
 class AppStoreSlider extends AppStoreElement {
-  storeUpdated(key, value) {
-    if (key == this.storeKey) {
-      this.input.value = value;
-    }
-  }
-
   initStoreListener() {
     this.input = this.el.querySelector("input");
     this.input.addEventListener("input", (e) => {
-      _store.set(this.storeKey, e.target.value, true);
+      _store.set(this.storeKey, parseFloat(e.target.value), true);
     });
     this.input.setAttribute("min", this.getAttribute("min") || 0);
     this.input.setAttribute("max", this.getAttribute("max") || 1);
@@ -20,6 +14,10 @@ class AppStoreSlider extends AppStoreElement {
       : 0;
 
     super.initStoreListener();
+  }
+
+  setStoreValue(value) {
+    this.input.value = value;
   }
 
   css() {

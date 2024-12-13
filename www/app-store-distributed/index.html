@@ -27,7 +27,7 @@
         <section>
           <h1>AppStoreDistributed Demo</h1>
           <p>A nice way to communicate between apps</p>
-          <h4>Buttons</h4>
+          <h4>Buttons with shared key</h4>
           <nav>
             <app-store-button key="BTN_KEY" value="BTN-VALUE-1"
               >Button 1</app-store-button
@@ -39,6 +39,15 @@
               >Button 3</app-store-button
             >
           </nav>
+          <h4>Special Buttons</h4>
+          <nav>
+            <app-store-button key="BTN_PULSE" value="true" momentary
+              >Momentary / Pulse</app-store-button
+            >
+            <app-store-button key="BTN_TOGGLE" value="true" toggle
+              >Toggle
+            </app-store-button>
+          </nav>
           <h4>Inputs</h4>
           <p>
             <app-store-textfield
@@ -49,12 +58,15 @@
           <p>
             <app-store-slider
               key="SLIDER_1"
-              value="0.2"
+              value="0"
               max="1"
             ></app-store-slider>
           </p>
         </section>
-        <event-log-view></event-log-view>
+        <details open>
+          <summary>Event Log</summary>
+          <event-log-view max-length="8"></event-log-view>
+        </details>
       </main>
       <footer class="container">
         <small>Built by us 👋</small>
