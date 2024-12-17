@@ -3,6 +3,8 @@ import AppStoreDistributed from "../app-store-distributed.js";
 // self-registering child components
 import "./websocket-indicator.js";
 import "./app-store-debug.js";
+import URLUtil from "../url-util.js";
+// import PointerPos from "../src/pointer-pos.js";
 
 class AppStateDistributed extends HTMLElement {
   connectedCallback() {
@@ -13,8 +15,13 @@ class AppStateDistributed extends HTMLElement {
   }
 
   initSharedState() {
-    // connect to websocket server
+    // get address from querystring or use default
     this.webSocketHost = "ws://" + document.location.hostname + ":3001/ws";
+    // let serverUrlFromHash = URLUtil.getHashQueryVariable("server");
+    // this.webSocketHost = serverUrlFromHash || this.webSocketHost;
+    // if (!serverUrlFromHash) document.location.hash += `&server=${serverAddr}`;
+
+    // connect to websocket server
     this.appStore = new AppStoreDistributed(this.webSocketHost);
 
     // listen for data/events

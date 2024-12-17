@@ -28,6 +28,7 @@ class AppStoreButton extends AppStoreElement {
         // normal buttons always send the initial attribute value
         curVal = this.storeValue;
       }
+
       // broadcast current value
       _store.set(this.storeKey, curVal, true);
       // if the storeValue is "momentary", send 1 and immediately 0
