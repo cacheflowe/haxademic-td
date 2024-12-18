@@ -26,8 +26,21 @@ class AppStoreDebug extends HTMLElement {
   }
 
   css() {
+    let isSideDisplay = this.hasAttribute("side-debug");
+    let sideCSS = isSideDisplay
+      ? `
+        top: 0; 
+        left: 0;
+        width: auto; 
+        height: 100%; 
+        max-width: 70%;
+        border-top: none;
+        border-right: 2px solid green;
+      `
+      : "";
     return /*css*/ `
       :host {
+        pointer-events: none;
         border-top: 2px solid green;
         position: fixed;
         bottom: 0;
@@ -41,10 +54,18 @@ class AppStoreDebug extends HTMLElement {
         font-size: 12px;
         z-index: 9999;
         display: none;
-        font-size: 10px;
+        ${sideCSS}
+      }
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
       }
       td {
-        font-size: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+      }
+      tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
       }
     `;
   }

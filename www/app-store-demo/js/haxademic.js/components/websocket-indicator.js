@@ -45,7 +45,7 @@ class WebsocketIndicator extends HTMLElement {
       div {
         position: absolute;
         top: 1rem;
-        left: 1rem;
+        right: 1rem;
         width: 20px; 
         height: 20px; 
         border-radius: 10px;

@@ -21,51 +21,40 @@
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <app-state-distributed debug></app-state-distributed>
+    <app-state-distributed debug side-debug></app-state-distributed>
     <custom-app>
       <main class="container">
         <section>
           <h1>AppStoreDistributed Demo</h1>
           <p>A nice way to communicate between apps</p>
-          <h4>Buttons with shared key</h4>
+          <h4>Buttons with shared key: APP_STATE</h4>
           <nav>
-            <app-store-button key="BTN_KEY" value="BTN-VALUE-1"
-              >Button 1</app-store-button
-            >
-            <app-store-button key="BTN_KEY" value="BTN-VALUE-2"
-              >Button 2</app-store-button
-            >
-            <app-store-button key="BTN_KEY" value="BTN-VALUE-3"
-              >Button 3</app-store-button
-            >
+            <app-store-button key="APP_STATE" value="ATTRACT">ATTRACT</app-store-button>
+            <app-store-button key="APP_STATE" value="GAMEPLAY">GAMEPLAY</app-store-button>
+            <app-store-button key="APP_STATE" value="GAME_OVER">GAME_OVER</app-store-button>
           </nav>
           <h4>Special Buttons</h4>
           <nav>
-            <app-store-button key="BTN_PULSE" value="1" momentary
-              >Momentary / Pulse</app-store-button
-            >
-            <app-store-button key="BTN_TOGGLE" value="false" toggle
-              >Toggle
-            </app-store-button>
+            <app-store-button key="BTN_PULSE" value="1" momentary>Momentary / Pulse</app-store-button>
+            <app-store-button key="BTN_TOGGLE" value="0" toggle>Toggle</app-store-button>
           </nav>
-          <h4>Inputs</h4>
+          <h4>Input Fields</h4>
           <p>
-            <app-store-textfield
-              key="TEXT_INPUT"
-              value=""
-            ></app-store-textfield>
+            <app-store-textfield key="TEXT_INPUT" value=""></app-store-textfield>
           </p>
           <p>
-            <app-store-slider
-              key="SLIDER_1"
-              value="0"
-              max="1"
-            ></app-store-slider>
+            <app-store-slider key="SLIDER_1" value="0" max="1"></app-store-slider>
+          </p>
+          <h4>Monitoring</h4>
+          <p>
+            <app-store-monitor key="KINECT_1_DEPTH_HEALTHY" value=""></app-store-monitor>
+            <app-store-monitor key="KINECT_2_DEPTH_HEALTHY" value=""></app-store-monitor>
+            <app-store-monitor key="KINECT_3_DEPTH_HEALTHY" value=""></app-store-monitor>
           </p>
         </section>
         <details open>
           <summary>Event Log</summary>
-          <event-log-view max-length="8"></event-log-view>
+          <event-log-view max-length="10"></event-log-view>
         </details>
       </main>
       <footer class="container">

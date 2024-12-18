@@ -60,6 +60,7 @@ class AppStoreButton extends AppStoreElement {
   css() {
     return /*css*/ `
       button input[type="checkbox"] {
+        margin-left: 0.5rem;
         margin-right: 0;
         pointer-events: none;
       }

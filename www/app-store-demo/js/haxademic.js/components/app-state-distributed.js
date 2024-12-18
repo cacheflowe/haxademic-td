@@ -11,15 +11,17 @@ class AppStateDistributed extends HTMLElement {
     this.shadow = this.attachShadow({ mode: "open" });
     this.initSharedState();
     this.addChildren();
-    // if (this.isDebug()) this.storeDebug.show();
   }
 
   initSharedState() {
     // get address from querystring or use default
     this.webSocketHost = "ws://" + document.location.hostname + ":3001/ws";
-    // let serverUrlFromHash = URLUtil.getHashQueryVariable("server");
-    // this.webSocketHost = serverUrlFromHash || this.webSocketHost;
-    // if (!serverUrlFromHash) document.location.hash += `&server=${serverAddr}`;
+    let serverUrlFromHash = URLUtil.getHashQueryVariable("server");
+    this.webSocketHost = serverUrlFromHash || this.webSocketHost;
+    if (!serverUrlFromHash) {
+      // show in URL for easy sharing
+      document.location.hash += `&server=${this.webSocketHost}`;
+    }
 
     // connect to websocket server
     this.appStore = new AppStoreDistributed(this.webSocketHost);
@@ -34,15 +36,15 @@ class AppStateDistributed extends HTMLElement {
   }
 
   addChildren() {
+    let sideDebug = this.hasAttribute("side-debug") ? "side-debug" : "";
     this.shadow.innerHTML = this.isDebug()
       ? /*html*/ `
         <websocket-indicator></websocket-indicator>
-        <app-store-debug></app-store-debug>
+        <app-store-debug ${sideDebug}></app-store-debug>
       `
       : /*html*/ `
         <app-store-debug></app-store-debug>
       `;
-    this.storeDebug = this.shadow.querySelector("app-store-debug");
   }
 
   // AppStore listeners
