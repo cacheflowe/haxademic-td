@@ -2,6 +2,13 @@
 
 A personal toolkit & demo playground
 
+## TODO
+
+- Bring in tox-saver from Dean
+- Implement base_debug from ragan in our Debug extension
+- Figure out licensing
+- Bring in components from Gatorade
+
 ## GLSL infos
 
 From: https ://docs.derivative.ca/Write_a_GLSL_TOP
