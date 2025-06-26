@@ -52,6 +52,10 @@ vec2 aspect = width * uTDOutputInfo.res.wz; // swizzle height/width
 vec2 p = vUV.xy / aspect;
 ```
 
+Center the coordinate system
+```glsl
+vec2 p = (vUV.st - vec2(0.5)) / aspect;
+```
 
 ## Python snippets
 
@@ -126,24 +130,139 @@ String formatting
 'hi'.rjust(10, '0') # 0000000hi
 ```
 
+## Advanced python coding in TD
+
+Native TD
+- Python Extensions
+- Basic Python intro: https://matthewragan.com/teaching-resources/touchdesigner/python-in-touchdesigner/
+
+Subprocess:
+- https://matthewragan.com/2019/08/14/touchdesigner-python-and-the-subprocess-module/
+
+External module support (NEW)
+- tdPyEnvManager:
+  - https://derivative.ca/community-post/introducing-touchdesigner-python-environment-manager-tdpyenvmanager/72024
+  - https://docs.derivative.ca/Experimental:TDPyEnvManagerHelper
+  - https://docs.derivative.ca/Experimental:Palette:tdPyEnvManager
+  - https://derivative.ca/community-post/custom-integration-thread-manager-support-third-party-python-library/72023
+
+External module support
+- Importing local custom modules w/sys.path
+- Via `Conda`: https://derivative.ca/community-post/tutorial/anaconda-miniconda-managing-python-environments-and-3rd-party-libraries
+- Via `venv`: https://forum.derivative.ca/t/real-time-magic-integrating-touchdesigner-and-onnx-models-2024-07-24/503693/5
+  - https://github.com/olegchomp/TDDepthAnything
+- Via `uv`: https://github.com/astral-sh/uv
+- Via `TD_PIP` component (Window's only): https://derivative.ca/community-post/asset/td-pip/63077
+- Matthew Ragan's talk on external modules: https://matthewragan.com/2019/09/04/touchdesigner-td-summit-2019-external-python-libraries/
+	- python -m pip install --user --upgrade pip
+	- pip install -r "{reqs}" --target="{target}"
+	- pip install qrcode[pil] --target="{target}"
+	- Then add in python script in TD:
+		```python
+		import sys
+		import os
+		sys.addpath(target)
+		```
+	- Maybe use TD's python to install, for compatibility? Also can use a matching Conda env
+  	- `"C:\Program Files\Derivative\TouchDesigner\bin\python.exe" -m pip install qrcode[pil] --target="./_modules"`\
+
+Using system variables
+- Set system vars before startup from shell script: https://www.youtube.com/watch?v=0RNqVlaW8Fo
+- Dialogs > Variables shows system variables
+  - var("VAR_NAME") to access them in TD via Python
+- Start TD files via python vs shell script: https://www.youtube.com/watch?v=UxvJG0Iqg1Q
+
+Adding system variables on the fly to simulate having an environent variable:
+```python	
+import os
+# Add Nmap to PATH, but first check whether it exists on the actual system filepath
+NMAP_PATH = r"C:\Program Files (x86)\Nmap"
+if os.path.exists(NMAP_PATH):
+    os.environ["PATH"] = NMAP_PATH + os.pathsep + os.environ["PATH"]
+    print(f"Added Nmap directory to PATH: {NMAP_PATH}")
+else:
+    print(f"Warning: Nmap directory not found at {NMAP_PATH}")
+```
+
+## ML in TD
+
+TF:
+- Can't run on GPU, but does work on CPU.
+
+Pytorch:
+- Noted incompatibilities, CUDA is difficult to recognize. Though TD does have CUDA in the TD /bin dir
+  - What about a command like this? borrowed from facefusion
+    - conda install conda-forge::cuda-runtime=12.8.0 conda-forge::cudnn=9.7.1.26
+- Check this project for torch example: https://github.com/olegchomp/TDDepthAnything
+  - https://huggingface.co/spaces/Xenova/webgpu-realtime-depth-estimation
+- https://github.com/DBraun/PyTorchTOP
+- https://forum.derivative.ca/t/import-pytorch-torch-in-build-2021-39010/245984/18
+
+ONNX:
+- Native onnx is supported but only if you're building a custom node w/C++: 
+  - https://github.com/TouchDesigner/CustomOperatorSamples/tree/main/TOP/ONNXCandyStyleTOP
+- Otherwise, you can use the onnxruntime python package to run onnx models in TD
+  - https://onnxruntime.ai/docs/install/
+- Try getting this running: https://github.com/fabio-sim/Depth-Anything-ONNX
+- https://derivative.ca/community-post/real-time-magic-integrating-touchdesigner-and-onnx-models/69856
+☝️ Check the comments
+- https://github.com/IntentDev/TopArray/
+- https://github.com/ioannismihailidis/venvBuilderTD/
+- https://github.com/ioannismihailidis/madmomTD (edited)
+- https://onnxruntime.ai/docs/tutorials/mobile/pose-detection.html
+- https://docs.ultralytics.com/tasks/pose/
+- https://docs.ultralytics.com/integrations/onnx/
+- https://github.com/yeataro/TD-ONNX-EX
+- other ideas:
+  - Check Qualcomm models: https://huggingface.co/qualcomm
+  - hand tracking:
+  	- https://github.com/PINTO0309/hand-gesture-recognition-using-onnx
+  	- https://huggingface.co/qualcomm/MediaPipe-Hand-Detection/tree/main
+	- openpose:
+  	- https://docs.radxa.com/en/orion/o6/app-development/artificial-intelligence/openpose
+	- https://aihub.qualcomm.com/models
+  - onnx example in webgpu
+    - https://medium.com/@geronimo7/in-browser-image-segmentation-with-segment-anything-model-2-c72680170d92
+    - https://github.com/geronimi73/next-sam
+
+
 ## Conda env
 
 From: https://derivative.ca/community-post/tutorial/anaconda-miniconda-managing-python-environments-and-3rd-party-libraries
 
 Notes:
 - Conda env needs to use the same python version as TouchDesigner. Currently 3.11
+- If top.numpyArray() breaks, something's wrong with the conda env. 
 
 ```bash
 conda env list
 conda create -n td-demo python=3.11
 conda activate td-demo
 
+# install the requirements.txt file
+conda install --yes --file requirements.txt
+pip install -r requirements.txt
+
+# Check version of TD libs and make sure you're using compatible versions of numpy, for example
+import numpy
+print(numpy.__version__)
+
 # install some libs
+pip install numpy==1.24.4 # 1.24.4 is the last version that works with TD 2023.30000
+# [pytesseract]
 conda install -c conda-forge pytesseract
-choco install tesseract
+# choco install tesseract
+conda install -c conda-forge pillow
+# epson priner
+pip install python-escpos
+# ultralytics (needs numpy 1.24.1)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install ultralytics
 
 # find the path to the conda env
 conda env list
+# or
+conda info --envs
 
 # remove the env
 conda deactivate

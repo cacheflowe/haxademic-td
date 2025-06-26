@@ -1,13 +1,20 @@
 import sys
 import os
 
+def PrintPythonPath():
+	if parent().par.Debug.eval() == 1:
+		print('Python sys.path:')
+		for path in sys.path:
+			print(" -", path)
+
+
 def addPythonUtilsToPath():
 	# Construct the path to the util directory
 	utils_path = os.path.join(project.folder, 'python', 'util')
 
 	# Print the module path to verify it
 	print("============================================")
-	print("Loading HaxLib Python utils from path:")
+	print("Loading Python utils from path:")
 	print(utils_path)
 
 	# check path for new utils_path in os.path
@@ -16,11 +23,12 @@ def addPythonUtilsToPath():
 		if os.path.exists(utils_path):
 			# If not, add it to sys.path
 			sys.path.insert(0, utils_path)  # Add to the beginning of the path list
-			print("Python path updated:")
-			# print paths as bulletpoints
-			for path in sys.path:
-				print(" -", path)
+			print("python/util imports are ready!")
+			PrintPythonPath()
 
+	else:
+		print('HaxLib Python utils already loaded!')
+	PrintPythonPath()
 	print("============================================")	
 
 	"""
