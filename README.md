@@ -74,6 +74,12 @@ run("TurnOff(args[0])", oldConnection, delayFrames=30)
 op('text_script_example').run('arg1=something', delayFrames=30)
 ```
 
+Threading in action:
+- JoystickToMouse.tox
+- PythonWebServer.tox
+- AppStore start webserver cmd 
+
+
 Threading:
 ```python
 import queue
@@ -134,8 +140,10 @@ String formatting
 
 Native TD
 - Python Extensions
+- `import td` in an external script
 - Basic Python intro: https://matthewragan.com/teaching-resources/touchdesigner/python-in-touchdesigner/
-
+- https://github.com/raganmd/touchdesigner-process-managment
+- 
 Subprocess:
 - https://matthewragan.com/2019/08/14/touchdesigner-python-and-the-subprocess-module/
 
