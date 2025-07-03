@@ -1,4 +1,10 @@
 import os
+
+utils_path = os.path.join(project.folder, 'python', 'util')
+if utils_path not in sys.path:
+	sys.path.append(utils_path) 
+
+
 import sys
 import config
 import importlib
@@ -23,7 +29,7 @@ class App:
 		self.addPythonUtilsPath()
 		self.appInit()
 		print("[App] Initialized!")
-		print("=============================================")
+		print("=============================================") 
 
 	# Reloads imported Python modules to ensure any changes are applied
 	# This is useful during development when you want to see changes without restarting the project.
@@ -44,6 +50,7 @@ class App:
 		# Initialize the application state here - this would be custom per application
 		self.loadEnvVars()
 		self.loadPythonModules()
+		me.time.play = 1
 		return
 	
 	def loadEnvVars(self): 
