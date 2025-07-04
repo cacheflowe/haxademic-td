@@ -1,0 +1,11 @@
+pyautogui # for GUI automation
+pillow # for image processing
+qrcode[pil] # for QR code generation
+pytesseract # for OCR
+# ultralytics # for YOLOv8 object detection
+numpy==1.24.4 # 1.24.4 is the last version that works with TD 2023.30000
+onnxruntime-gpu # for ONNX model inference
+--extra-index-url https://download.pytorch.org/whl/cu118 
+torch 
+torchvision 
+torchaudio 

@@ -1,13 +1,15 @@
+# Python standard lib imports
 import os
+import sys
+import importlib
 
+# Add base modules to allow for further imports, specifically `config`
 utils_path = os.path.join(project.folder, 'python', 'util')
 if utils_path not in sys.path:
 	sys.path.append(utils_path) 
 
-
-import sys
+# Custom imports
 import config
-import importlib
 
 class App:
 	"""
@@ -50,7 +52,6 @@ class App:
 		# Initialize the application state here - this would be custom per application
 		self.loadEnvVars()
 		self.loadPythonModules()
-		me.time.play = 1
 		return
 	
 	def loadEnvVars(self): 
@@ -64,5 +65,6 @@ class App:
 	def loadPythonModules(self):
 		# Add any extra python environments/modules 
 		# config.AddPyDirToPath(os.path.join(project.folder, 'python', 'other_modules')) # add more python modules to sys.path if desired
-		config.AddCondaEnvToPath("cacheflowe", "td-onnx")
+		# config.AddCondaEnvToPath("cacheflowe", "td-onnx")
+		config.AddPyDirToPath(os.path.join(project.folder, 'python', '_local_modules'))
 		config.PrintPythonPath()

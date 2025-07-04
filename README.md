@@ -234,13 +234,20 @@ ONNX:
     - https://github.com/geronimi73/next-sam
 
 
+## Local modules
+
+- You can install python modules in a local directory, and then add that directory to the python path in TD.
+- This allows you to use custom modules in your TD project without installing them globally.
+- By installing with the TouchDesigner python, you ensure compatibility with the TD version.
+
 ## Conda env
 
 From: https://derivative.ca/community-post/tutorial/anaconda-miniconda-managing-python-environments-and-3rd-party-libraries
 
 Notes:
 - Conda env needs to use the same python version as TouchDesigner. Currently 3.11
-- If top.numpyArray() breaks, something's wrong with the conda env. 
+- Conda installs its own version of Python
+- If top.numpyArray() breaks, something's wrong with the conda env. Upcoming TD versions claim to have a fix for these hard crashes
 
 ```bash
 conda env list
@@ -266,6 +273,7 @@ pip install python-escpos
 # ultralytics (needs numpy 1.24.1)
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 pip install ultralytics
+pip install onnxruntime-gpu
 
 # find the path to the conda env
 conda env list
@@ -275,6 +283,26 @@ conda info --envs
 # remove the env
 conda deactivate
 conda env remove -n td-demo
+
+# Export the env to a requirements.txt file
+conda list -e > requirements.txt
+# or maybe
+conda env export --name td-demo > requirements.txt
+```
+
+## venv
+
+```bash
+# Create a virtual environment in a local folder
+# Make sure you have python installed and available in your PATH
+python -m venv myenv
+
+# Activate the virtual environment
+# On Windows
+myenv\Scripts\activate
+
+# Install packages
+pip install -r requirements.txt
 ```
 
 ## Import a custom python module

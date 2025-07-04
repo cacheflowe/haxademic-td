@@ -51,7 +51,7 @@ def AddPyDirToPath(new_path):
 		if os.path.exists(new_path):
 			sys.path.insert(0, new_path)  # Add to the beginning of the path list
 	else:
-		print('[Config]Python path already loaded!')
+		print('[Config] Python path already loaded!')
 
 
 def LoadEnvFile(new_path=os.path.join(td.project.folder, '.env')):
