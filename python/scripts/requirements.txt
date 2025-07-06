@@ -3,7 +3,9 @@ pillow # for image processing
 qrcode[pil] # for QR code generation
 pytesseract # for OCR
 # ultralytics # for YOLOv8 object detection
-numpy==1.24.4 # 1.24.4 is the last version that works with TD 2023.30000
+protobuf>=3.19.4,<4.0.0 # For mediapipe compatibility
+mediapipe # for computer vision tasks
+numpy==1.24.4 # 1.24.4 is the last version that works with TD 
 onnxruntime-gpu # for ONNX model inference
 --extra-index-url https://download.pytorch.org/whl/cu118 
 torch 

@@ -59,6 +59,7 @@ class App:
 		op.AppStore.par.Applydefaults.pulse()
 		# Load .env file and system environment vars
 		# The order here would override any loaded vars with the last loaded value 
+		# envFileSpecific = os.path.join(project.folder, 'data', '.env') # path to the .env file
 		config.LoadEnvFile() # defaults to loading the .env file in the project root, but an optional path can be passed in
 		config.LoadSystemEnvironmentVar('sys_env_var', 'Default Value') # set by a shell script before launching the .toe: `set sys_env_var=Something`
 	
