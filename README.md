@@ -66,6 +66,7 @@ vec2 p = (vUV.st - vec2(0.5)) / aspect;
 run(lambda: self.BroadcastVals(), delayFrames=30)
 run(self.BroadcastVals, delayFrames=30)
 run('self.BroadcastVals(args)', delayFrames=30)
+run( "args[0]()", lambda: self.update_par("dos"), delayFrames = 200 )  # https://forum.derivative.ca/t/using-run-to-delay-python-code-2022-12-11-15-37/306405/2
 # Call a global function with a delay
 run("broadcastVals()", delayFrames=30)
 # Call a function with an argument
@@ -172,7 +173,7 @@ External module support
 		sys.addpath(target)
 		```
 	- Maybe use TD's python to install, for compatibility? Also can use a matching Conda env
-  	- `"C:\Program Files\Derivative\TouchDesigner\bin\python.exe" -m pip install qrcode[pil] --target="./_modules"`\
+  	- `&"C:\Program Files\Derivative\TouchDesigner\bin\python.exe" -m pip install qrcode[pil] --target="./_modules"`\
 
 Using system variables
 - Set system vars before startup from shell script: https://www.youtube.com/watch?v=0RNqVlaW8Fo
@@ -194,8 +195,17 @@ else:
 
 ## ML in TD
 
+Cuda versions for TD versions
+- https://derivative.ca/UserGuide/CUDA
+
+```python
+import torch
+torch.version.cuda = '11.8'
+torch.__version__ = '2.7.1+cu118'
+```
+
 TF:
-- Can't run on GPU, but does work on CPU.
+- Can't run on GPU, but does work on CPU (Windows)
 
 Pytorch:
 - Noted incompatibilities, CUDA is difficult to recognize. Though TD does have CUDA in the TD /bin dir
@@ -209,8 +219,11 @@ Pytorch:
 ONNX:
 - Native onnx is supported but only if you're building a custom node w/C++: 
   - https://github.com/TouchDesigner/CustomOperatorSamples/tree/main/TOP/ONNXCandyStyleTOP
-- Otherwise, you can use the onnxruntime python package to run onnx models in TD
+- Otherwise, you can use the onnxruntime-gpu python package to run onnx models in TD. Version 1.17 is GPU compatible!
   - https://onnxruntime.ai/docs/install/
+  - `&"C:\Program Files\Derivative\TouchDesigner\bin\python.exe" -m pip install onnxruntime-gpu==1.17.0 --target="../_local_modules"`
+  - `pip install onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-11/pypi/simple/`
+- See the inner workings of an onnx model: https://netron.app/
 - Try getting this running: https://github.com/fabio-sim/Depth-Anything-ONNX
 - https://derivative.ca/community-post/real-time-magic-integrating-touchdesigner-and-onnx-models/69856
 ☝️ Check the comments
@@ -239,6 +252,12 @@ ONNX:
 - You can install python modules in a local directory, and then add that directory to the python path in TD.
 - This allows you to use custom modules in your TD project without installing them globally.
 - By installing with the TouchDesigner python, you ensure compatibility with the TD version.
+- Use `pipreqs` to generate a version-specific requirements.txt file for your local modules:
+```bash
+pip install pipreqs
+pipreqs /path/to/your/project --force
+pipreqs . --ignore ".venv,numpy/core/tests,pyparsing" --force --encoding=iso-8859-1
+```
 
 ## Conda env
 
@@ -368,4 +387,38 @@ for detection in detection_result.detections:
 for i, detection in enumerate(detection_result.detections):
 for i in range(min(maxResults, len(detection_result.detections))):
 for i, c in enumerate(newOps): # replicator
+```
+
+
+## Op connectors
+
+```python
+op.inputs[0]
+op1.outputConnectors[0].connect(op2)
+op1.outputConnectors[0].connect(op2.inputConnectors[0])
+```
+
+## run()
+
+```python
+run() w/delay from extension
+run("parent().SampleTriggerOff()", fromOP=me, delayFrames=1)
+run(f"op('{self.ownerComp.path}').PulseTriggerLaunch()", delayFrames=delayFrames)
+```
+
+## Call a function from another text DAT
+
+```python
+op('text_other_script').module.function_name()
+op('text_other_script').run('function_name()')	
+op('text_other_script').run('function_name(args)', delayFrames=30)
+op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me)
+op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me, args=[arg1, arg2])
+```
+
+## Get text width
+
+```python
+me.evalTextSize(me.par.text.eval())[0]
+op('text_top').evalTextSize("text to measure")[0]
 ```
