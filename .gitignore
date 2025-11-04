@@ -8,3 +8,4 @@ tmp/
 python/_local_modules
 haxademic.*.toe
 node_modules
+_modules
