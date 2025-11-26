@@ -7,22 +7,29 @@ A personal toolkit & demo playground
 - Save demos as tox files and get them out of the project
 - Bring in components from Gatorade
 
-## Concepts
+## OOP in TD Concepts
 
-- OOP w/Python extensions
-  - Base Comp/Container
-    - Customize w/parameters
-    - Parexec
-  - Global op references are singletons or clone masters
+- Base Comp or Container is a class
+  - Customize w/parameters
+  - Parexec
+  - op()/ops() - query nodes like document.querySelector() in .js
+  - Global op references are singletons or clone masters. Should only be at top level
 - Cloning & replicators
-  - Replilcator is like a for() loop that creates a bunch of objects from a class
+  - Replilcator is like a for() loop that creates a bunch of objects from a class definition
   - Clones are like instances of a class, generally sprinkled throughout a project
 - Externalizing .tox & .py files 
   - for git tracking & easy access in VS Code
   - externalized python is one step closer to normal AI-assisted dev workflows
-- Python -> nodes -> Python flow. No floating scripts!
+- Python extensions
+	- Class per comp/container
+  	- Can handle lifecycle events
+  	- execute dat traditionally handles some of this
+  - Python -> nodes -> Python flow
+    - Last node is a chopexec that calls back into the class
+  - No floating chopexec scripts!
   - Logic in python, numeric operations in CHOPs
   - Dependable properties
+  - /project1 gets an App extension w/global op ref
 - Bootstrap App extension
   - .env vars
   - shell env vars
