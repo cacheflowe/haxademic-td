@@ -15,8 +15,8 @@ class AppStore:
 		# The component to which this extension is attached
 		self.ownerComp = ownerComp
 		self.initStore()
-		self.initWebSocket(self.ownerComp)
-		# TODO: how does this work across saves? seems like it'll wipe out the listeners, then any listeners need to re-add, which is a nightmare for development
+		self.initWebSocket()
+		# python callbacks. there's some funkiness with cleanup that should be explored more
 		self.listeners = []
 		self.listenersByKey = {}
 
@@ -236,15 +236,15 @@ class AppStore:
 	# WebSocket connection
 	################################################### 
 
-	def initWebSocket(self, ownerComp):
-		self.setActiveState(0)
+	def initWebSocket(self):
+		self.setIsConnected(0)
 		self.setColor(1, 1, 0)
 		self.CheckSocketReconnect()
 		return
 	
 	# if state is 0, allow button-click to run shell script
 	def StartWebServer(self):
-		if self.ActiveState() == False:
+		if self.IsConnected() == False:
 			print('[AppStore] Starting web server shell script...')
 			thread = threading.Thread(target=self.StartWebServerThread)
 			thread.start()
@@ -269,25 +269,25 @@ class AppStore:
 		# ipAddr = op.SystemUtil.GetIpAddress()
 		# op.SystemUtil.OpenURL("http://" + ipAddr + ":5173/") # app-store-distributed/index.html
 	
-	def setActiveState(self, state):
+	def setIsConnected(self, state):
 		op('constant_active').par.value0 = state
 		return
 	
-	def ActiveState(self):
+	def IsConnected(self):
 		return op('constant_active').par.value0 == 1
 
 	def CheckSocketReconnect(self):
-		if self.ActiveState() == False:
+		if self.IsConnected() == False:
 			op('websocket1').par.active = 1
 			op('websocket1').par.reset.pulse()
 		return
 	
 	def SocketConnected(self, websocketDat):
-		self.setActiveState(1)
+		self.setIsConnected(1)
 		self.setColor(0, 1, 0)
 	
 	def SocketDisconnected(self, websocketDat):
-		self.setActiveState(0)
+		self.setIsConnected(0)
 		self.setColor(1, 1, 0)
 
 	def MessageReceived(self, dat, rowIndex, message):
