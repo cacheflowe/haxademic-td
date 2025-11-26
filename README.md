@@ -5,8 +5,33 @@ A personal toolkit & demo playground
 ## TODO
 
 - Save demos as tox files and get them out of the project
-- save python files for utility toxes. maybe this util code should be elsewhere?
 - Bring in components from Gatorade
+
+## Concepts
+
+- OOP w/Python extensions
+  - Base Comp/Container
+    - Customize w/parameters
+  - Python -> nodes -> Python flow. No floating scripts!
+    - Logic in python, numeric operations in CHOPs
+  - Dependable properties
+- Externalizing .tox & .py files 
+  - for git tracking & easy access in VS Code
+  - externalized python is one step closer to normal AI-assisted dev workflows
+- Bootstrap App extension
+  - .env vars
+  - shell env vars
+  - Launch app w/shell script, reliably
+- Global op references are singletons or clone masters
+- Cloning & replicators
+  - Replilcator is like a for() loop that creates a bunch of objects from a class
+  - Clones are like instances of a class, generally sprinkled throughout a project
+- External python modules - now w/ pyEnvManager
+- AppStore (w/socket server)
+  - Store paths to shared nodes
+- Probably not for today
+  - ML tools in TD
+  - Threading
 
 ## GLSL infos
 
@@ -129,12 +154,20 @@ class PythonWebServer:
 String formatting
 
 ```python
+# quick string interpolation
+f'var = {variable}'
+'var = {}'.format(variable) # alt
 # zero padding a number
 '{:03d}'.format(1) # 001
 '{:010d}'.format(9223) # 0000009223
 # zero pad a string
 'hi'.zfill(10) # 0000000hi
 'hi'.rjust(10, '0') # 0000000hi
+# rounding numbers
+f'{variable:.2f}' # 2 decimal places
+f'{variable:.0f}' # no decimal places
+# rounding with padding
+f'{variable:05.2f}' # 5 total spaces, 2 decimal places
 ```
 
 ## Advanced python coding in TD
@@ -144,9 +177,10 @@ Native TD
 - `import td` in an external script
 - Basic Python intro: https://matthewragan.com/teaching-resources/touchdesigner/python-in-touchdesigner/
 - https://github.com/raganmd/touchdesigner-process-managment
-- 
 Subprocess:
 - https://matthewragan.com/2019/08/14/touchdesigner-python-and-the-subprocess-module/
+Windows extensions:
+- https://github.com/mhammond/pywin32
 
 External module support (NEW)
 - tdPyEnvManager:
@@ -162,6 +196,7 @@ External module support
   - https://github.com/olegchomp/TDDepthAnything
 - Via `uv`: https://github.com/astral-sh/uv
 - Via `TD_PIP` component (Window's only): https://derivative.ca/community-post/asset/td-pip/63077
+- https://github.com/PlusPlusOneGmbH/TD_PyPaIn
 - Matthew Ragan's talk on external modules: https://matthewragan.com/2019/09/04/touchdesigner-td-summit-2019-external-python-libraries/
 	- python -m pip install --user --upgrade pip
 	- pip install -r "{reqs}" --target="{target}"
@@ -193,26 +228,65 @@ else:
     print(f"Warning: Nmap directory not found at {NMAP_PATH}")
 ```
 
+## Python dependencies info
+
+Python extension help:
+- https://derivative.ca/community-post/tutorial/tdudependency-tutorial/66489
+- https://derivative.ca/UserGuide/Dependency_Class
+  - `self.Scale = tdu.Dependency(5)`
+  - For objects (not single values), use Deeply dependable objects
+    - https://derivative.ca/UserGuide/TDStoreTools#Deeply_Dependable_Collections
+- https://derivative.ca/UserGuide/CallbacksExt_Extension
+- https://derivative.ca/UserGuide/Extensions
+  - `__delTD__` is the pre-experimental way to cleanup a class when it's been re-saved
+- https://derivative.ca/UserGuide/Experimental:Extensions
+  - `onDestroyTD` for cleanup of listeners!
+  - use `StorageManager` to keep values between saves, because init() resets everything
+  - `TDF.createProperty` makes a variable dependable
+- https://derivative.ca/UserGuide/Introduction_to_Python_Tutorial
+  - `mod` for one-line imports
+  - `op.TDModules`
+- https://docs.derivative.ca/TDFunctions
+
+General:
+- https://derivative.ca/UserGuide/Category:TDPages
+- https://derivative.ca/UserGuide/Python_Classes_and_Modules
+- https://derivative.ca/UserGuide/Python_Tips (general .py goodness)
+- https://docs.derivative.ca/Introduction_to_Python_Tutorial
+- https://derivative.ca/UserGuide/Working_with_OPs_in_Python
+- https://derivative.ca/UserGuide/Using_Multiple_Graphic_Cards
+- https://docs.derivative.ca/OpenCV
+
+Classes of interest
+- https://derivative.ca/UserGuide/Project_Class
+- https://derivative.ca/UserGuide/App_Class
+
+Color component
+- https://derivative.ca/UserGuide/Color_Class
+
 ## ML in TD
 
 Cuda versions for TD versions
 - https://derivative.ca/UserGuide/CUDA
 
+If you've installed pytorch:
 ```python
 import torch
 torch.version.cuda = '11.8'
 torch.__version__ = '2.7.1+cu118'
 ```
 
-TF:
+TensorFlow:
 - Can't run on GPU, but does work on CPU (Windows)
 
 Pytorch:
 - Noted incompatibilities, CUDA is difficult to recognize. Though TD does have CUDA in the TD /bin dir
   - What about a command like this? borrowed from facefusion
     - conda install conda-forge::cuda-runtime=12.8.0 conda-forge::cudnn=9.7.1.26
-- Check this project for torch example: https://github.com/olegchomp/TDDepthAnything
-  - https://huggingface.co/spaces/Xenova/webgpu-realtime-depth-estimation
+- Check these projects for torch example: 
+  - https://github.com/olegchomp/TDDepthAnything
+  - https://github.com/patrickhartono/TDYolo
+  - Related: https://huggingface.co/spaces/Xenova/webgpu-realtime-depth-estimation
 - https://github.com/DBraun/PyTorchTOP
 - https://forum.derivative.ca/t/import-pytorch-torch-in-build-2021-39010/245984/18
 
@@ -234,18 +308,30 @@ ONNX:
 - https://docs.ultralytics.com/tasks/pose/
 - https://docs.ultralytics.com/integrations/onnx/
 - https://github.com/yeataro/TD-ONNX-EX
+- Optical flow:
+  - https://github.com/ibaiGorordo/ONNX-NeuFlowV2-Optical-Flow
+  - https://github.com/ibaiGorordo/ONNX-RAFT-Optical-Flow-Estimation
 - other ideas:
-  - Check Qualcomm models: https://huggingface.co/qualcomm
+  - Human matting! https://github.com/PeterL1n/RobustVideoMatting
+  - Find more models: 
+  	- https://aihub.qualcomm.com/models
+    - https://huggingface.co/qualcomm
+    - https://huggingface.co/onnx-community/models
+    - https://huggingface.co/onnxmodelzoo
   - hand tracking:
   	- https://github.com/PINTO0309/hand-gesture-recognition-using-onnx
   	- https://huggingface.co/qualcomm/MediaPipe-Hand-Detection/tree/main
+  	- Ran into palm detection initial step issue
+	- smollvm:
+  	- https://huggingface.co/HuggingFaceTB/SmolVLM-256M-Instruct/discussions/4
 	- openpose:
   	- https://docs.radxa.com/en/orion/o6/app-development/artificial-intelligence/openpose
-	- https://aihub.qualcomm.com/models
   - onnx example in webgpu
     - https://medium.com/@geronimo7/in-browser-image-segmentation-with-segment-anything-model-2-c72680170d92
     - https://github.com/geronimi73/next-sam
-
+	- SAM2
+  	- https://github.com/ibaiGorordo/ONNX-SAM2-Segment-Anything
+	- Alt pose estimation: https://github.com/Tau-J/rtmlib
 
 ## Local modules
 
@@ -367,6 +453,32 @@ importlib.reload(module_to_reload)
 ```
 
 
+## Replicator template snippets
+
+Anchor replicants to the replicator parent by setting the Layout Origin props
+
+```python
+me.nodeX + 300
+me.nodeY
+```
+
+```python
+def onReplicate(comp, allOps, newOps, template, master):
+	# get mixer & layout operators
+	opDest = parent().op('merge1')
+
+	for c in newOps:
+		# set props to enable from disabled template
+		c.par.display = 1
+		c.par.enable = 1
+		# connect to destination
+		c.outputConnectors[0].connect(opDest)
+		pass
+
+	return
+```
+
+
 ## Script OPs
 
 Create or reuse a channel:
@@ -389,6 +501,11 @@ for i in range(min(maxResults, len(detection_result.detections))):
 for i, c in enumerate(newOps): # replicator
 ```
 
+## Concat a table DAT into a single line
+
+```python
+"\n".join([f"{row[0]}: {row[1]}" for row in op('eval_props').rows()])
+```
 
 ## Op connectors
 
@@ -400,8 +517,9 @@ op1.outputConnectors[0].connect(op2.inputConnectors[0])
 
 ## run()
 
-```python
 run() w/delay from extension
+
+```python
 run("parent().SampleTriggerOff()", fromOP=me, delayFrames=1)
 run(f"op('{self.ownerComp.path}').PulseTriggerLaunch()", delayFrames=delayFrames)
 ```
@@ -421,4 +539,46 @@ op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me, ar
 ```python
 me.evalTextSize(me.par.text.eval())[0]
 op('text_top').evalTextSize("text to measure")[0]
+```
+
+## Extension template
+
+```python
+from TDStoreTools import StorageManager
+import TDFunctions as TDF
+
+class NewExtension:
+	"""
+	NewExtension description
+	"""
+
+	def __init__(self, ownerComp):
+		self.ownerComp = ownerComp
+		self.stored = StorageManager(self, ownerComp, [
+			{'name': 'ExampleProp', 'default': None, 'readOnly': False, 'property': True, 'dependable': True},
+		])
+
+	def Reset(self):
+		return
+
+	# AppStoreToggle callbacks
+
+	def On_show(self):
+		self.Reset()  
+
+	def On_hidden(self):
+		self.Reset()
+
+	# Extension cleanup methods (new and old versions of TD)
+
+	def __delTD__(self):
+		self.dispose()
+
+	def onDestroyTD(self):
+		self.dispose()
+
+	def dispose(self):
+		print('[NewExtension] Cleaning up')
+		# self.stored.clear() # Uncomment to reset stored values
+
 ```
