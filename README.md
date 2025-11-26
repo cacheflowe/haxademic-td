@@ -12,28 +12,29 @@ A personal toolkit & demo playground
 - OOP w/Python extensions
   - Base Comp/Container
     - Customize w/parameters
-  - Python -> nodes -> Python flow. No floating scripts!
-    - Logic in python, numeric operations in CHOPs
-  - Dependable properties
+    - Parexec
+  - Global op references are singletons or clone masters
+- Cloning & replicators
+  - Replilcator is like a for() loop that creates a bunch of objects from a class
+  - Clones are like instances of a class, generally sprinkled throughout a project
 - Externalizing .tox & .py files 
   - for git tracking & easy access in VS Code
   - externalized python is one step closer to normal AI-assisted dev workflows
+- Python -> nodes -> Python flow. No floating scripts!
+  - Logic in python, numeric operations in CHOPs
+  - Dependable properties
 - Bootstrap App extension
   - .env vars
   - shell env vars
   - Launch app w/shell script, reliably
-- Global op references are singletons or clone masters
-- Cloning & replicators
-  - Replilcator is like a for() loop that creates a bunch of objects from a class
-  - Clones are like instances of a class, generally sprinkled throughout a project
 - External python modules - now w/ pyEnvManager
-- AppStore (w/socket server)
+- AppStore (w/socket server) - look at Zoox example
   - Store paths to shared nodes
 - Probably not for today
   - ML tools in TD
   - Threading
 
-## GLSL infos
+## GLSL in TD
 
 From: https ://docs.derivative.ca/Write_a_GLSL_TOP
 
@@ -82,7 +83,7 @@ Center the coordinate system
 vec2 p = (vUV.st - vec2(0.5)) / aspect;
 ```
 
-## Python snippets
+## run()
 
 [run()](https://derivative.ca/UserGuide/Run_Command_Examples)
 
@@ -99,6 +100,26 @@ run("TurnOff(args[0])", oldConnection, delayFrames=30)
 # Call a script DAT with an argument and a delay
 op('text_script_example').run('arg1=something', delayFrames=30)
 ```
+
+
+run() w/delay from extension
+
+```python
+run("parent().SampleTriggerOff()", fromOP=me, delayFrames=1)
+run(f"op('{self.ownerComp.path}').PulseTriggerLaunch()", delayFrames=delayFrames)
+```
+
+## Call a function from another text DAT
+
+```python
+op('text_other_script').module.function_name()
+op('text_other_script').run('function_name()')	
+op('text_other_script').run('function_name(args)', delayFrames=30)
+op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me)
+op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me, args=[arg1, arg2])
+```
+
+## Threading examples
 
 Threading in action:
 - JoystickToMouse.tox
@@ -238,6 +259,7 @@ Python extension help:
     - https://derivative.ca/UserGuide/TDStoreTools#Deeply_Dependable_Collections
 - https://derivative.ca/UserGuide/CallbacksExt_Extension
 - https://derivative.ca/UserGuide/Extensions
+- https://derivative.ca/UserGuide/Talk:Extensions
   - `__delTD__` is the pre-experimental way to cleanup a class when it's been re-saved
 - https://derivative.ca/UserGuide/Experimental:Extensions
   - `onDestroyTD` for cleanup of listeners!
@@ -260,8 +282,6 @@ General:
 Classes of interest
 - https://derivative.ca/UserGuide/Project_Class
 - https://derivative.ca/UserGuide/App_Class
-
-Color component
 - https://derivative.ca/UserGuide/Color_Class
 
 ## ML in TD
@@ -515,24 +535,6 @@ op1.outputConnectors[0].connect(op2)
 op1.outputConnectors[0].connect(op2.inputConnectors[0])
 ```
 
-## run()
-
-run() w/delay from extension
-
-```python
-run("parent().SampleTriggerOff()", fromOP=me, delayFrames=1)
-run(f"op('{self.ownerComp.path}').PulseTriggerLaunch()", delayFrames=delayFrames)
-```
-
-## Call a function from another text DAT
-
-```python
-op('text_other_script').module.function_name()
-op('text_other_script').run('function_name()')	
-op('text_other_script').run('function_name(args)', delayFrames=30)
-op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me)
-op('text_other_script').run('function_name(args)', delayFrames=30, fromOP=me, args=[arg1, arg2])
-```
 
 ## Get text width
 
@@ -541,11 +543,21 @@ me.evalTextSize(me.par.text.eval())[0]
 op('text_top').evalTextSize("text to measure")[0]
 ```
 
+## Debugging
+
+```python
+debug(variable) # TouchDesigner debug print - provides more info than print()
+dir(newTuplet) # list all properties & methods of an object
+print(repr(variable)) # detailed representation of a variable	
+print(type(variable)) # type of variable
+```
+
 ## Extension template
 
 ```python
 from TDStoreTools import StorageManager
 import TDFunctions as TDF
+import tdu
 
 class NewExtension:
 	"""
@@ -554,6 +566,15 @@ class NewExtension:
 
 	def __init__(self, ownerComp):
 		self.ownerComp = ownerComp
+		# Create dependable properties that reset when extension is saved
+		TDF.createProperty(self, 'MyProp1', value=3, dependable=True) 
+		self.MyProp2 = tdu.Dependency(3)
+
+		# Example update different dependable props:
+		# self.MyProp1 = 11
+		# self.MyProp2.val = 5
+
+		# Create dependables with StorageManager, which persist between saves
 		self.stored = StorageManager(self, ownerComp, [
 			{'name': 'ExampleProp', 'default': None, 'readOnly': False, 'property': True, 'dependable': True},
 		])
@@ -577,6 +598,10 @@ class NewExtension:
 	def onDestroyTD(self):
 		self.dispose()
 
+	def __del__(self):
+		# called after onDestroyTD
+		return
+		
 	def dispose(self):
 		print('[NewExtension] Cleaning up')
 		# self.stored.clear() # Uncomment to reset stored values
